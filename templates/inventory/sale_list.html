@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Sales{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Sales</h2>
+  <a href="{% url 'sale_create' %}" class="btn btn-primary">+ New Sale</a>
+</div>
+
+<table class="table table-striped table-hover bg-white align-middle">
+  <thead class="table-dark">
+    <tr><th>#</th><th>Date</th><th>Customer</th><th>Items</th><th>Total</th><th>Served by</th><th class="text-end">Actions</th></tr>
+  </thead>
+  <tbody>
+  {% for s in object_list %}
+    <tr>
+      <td><a href="{% url 'sale_detail' s.pk %}">#{{ s.pk }}</a></td>
+      <td>{{ s.date|date:"Y-m-d H:i" }}</td>
+      <td>{{ s.customer|default:"Walk-in" }}</td>
+      <td>{{ s.items.all|length }}</td>
+      <td>{{ s.total }}</td>
+      <td>{{ s.served_by|default:"-" }}</td>
+      <td class="text-end">
+        <a href="{% url 'sale_detail' s.pk %}" class="btn btn-sm btn-outline-secondary">View</a>
+        <a href="{% url 'sale_update' s.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+        <a href="{% url 'sale_delete' s.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="7" class="text-center text-muted">No sales yet.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% include "inventory/_pagination.html" %}
+{% endblock %}

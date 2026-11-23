@@ -1,0 +1,116 @@
+﻿{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Dashboard</h2>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="card text-bg-primary h-100"><div class="card-body">
+      <div class="small">Today's revenue</div>
+      <div class="fs-3">{{ today_revenue|floatformat:2 }}</div>
+      <div class="small">{{ today_sales_count }} sale{{ today_sales_count|pluralize }}</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card text-bg-success h-100"><div class="card-body">
+      <div class="small">This month's revenue</div>
+      <div class="fs-3">{{ month_revenue|floatformat:2 }}</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card text-bg-secondary h-100"><div class="card-body">
+      <div class="small">Products</div>
+      <div class="fs-3">{{ product_count }}</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card {% if low_stock_count %}text-bg-danger{% else %}text-bg-success{% endif %} h-100"><div class="card-body">
+      <div class="small">Low-stock products</div>
+      <div class="fs-3">{{ low_stock_count }}</div>
+    </div></div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-lg-8">
+    <div class="card h-100"><div class="card-body">
+      <h5>Revenue, last 7 days</h5>
+      <div style="height:300px"><canvas id="revenueChart"></canvas></div>
+    </div></div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card h-100"><div class="card-body">
+      <h5>Top sellers this month</h5>
+      <table class="table table-sm mb-0">
+        {% for p in top_products %}
+          <tr><td>{{ p.product__name }}</td><td class="text-end">{{ p.sold }} sold</td></tr>
+        {% empty %}
+          <tr><td class="text-muted">No sales yet this month.</td></tr>
+        {% endfor %}
+      </table>
+    </div></div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card h-100"><div class="card-body">
+      <h5>Low-stock alerts</h5>
+      <table class="table table-sm align-middle mb-0">
+        <thead><tr><th>Product</th><th>In stock</th><th>Reorder at</th><th></th></tr></thead>
+        <tbody>
+        {% for p in low_stock %}
+          <tr>
+            <td>{{ p.name }}</td>
+            <td><span class="badge bg-danger">{{ p.quantity }}</span></td>
+            <td>{{ p.reorder_level }}</td>
+            <td class="text-end"><a href="{% url 'product_update' p.pk %}" class="btn btn-sm btn-outline-primary">Restock</a></td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="4" class="text-success">All products are well stocked.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card h-100"><div class="card-body">
+      <h5>Recent sales</h5>
+      <table class="table table-sm align-middle mb-0">
+        <thead><tr><th>#</th><th>Date</th><th>Customer</th><th class="text-end">Total</th></tr></thead>
+        <tbody>
+        {% for s in recent_sales %}
+          <tr>
+            <td><a href="{% url 'sale_detail' s.pk %}">#{{ s.pk }}</a></td>
+            <td>{{ s.date|date:"M d, H:i" }}</td>
+            <td>{{ s.customer|default:"Walk-in" }}</td>
+            <td class="text-end">{{ s.total|floatformat:2 }}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="4" class="text-muted">No sales yet.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+</div>
+
+{{ chart_data|json_script:"chart-data" }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3"></script>
+<script>
+  const chartData = JSON.parse(document.getElementById('chart-data').textContent);
+  new Chart(document.getElementById('revenueChart'), {
+    type: 'bar',
+    data: {
+      labels: chartData.labels,
+      datasets: [{ label: 'Revenue', data: chartData.values, backgroundColor: '#0d6efd' }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
+{% endblock %}

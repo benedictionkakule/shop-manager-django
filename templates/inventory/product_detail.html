@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ object.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-4">
+        {% if object.image %}
+          <img src="{{ object.image.url }}" class="img-fluid rounded" alt="{{ object.name }}">
+        {% else %}
+          <div class="bg-secondary text-white text-center p-5 rounded">No image</div>
+        {% endif %}
+      </div>
+      <div class="col-md-8">
+        <h2>{{ object.name }}
+          {% if object.is_low_stock %}<span class="badge bg-danger">Low stock</span>{% endif %}
+        </h2>
+        <table class="table table-borderless">
+          <tr><th>SKU</th><td>{{ object.sku }}</td></tr>
+          <tr><th>Category</th><td>{{ object.category }}</td></tr>
+          <tr><th>Supplier</th><td>{{ object.supplier|default:"None" }}</td></tr>
+          <tr><th>Price</th><td>{{ object.price }}</td></tr>
+          <tr><th>In stock</th><td>{{ object.quantity }}</td></tr>
+          <tr><th>Reorder level</th><td>{{ object.reorder_level }}</td></tr>
+          <tr><th>Last updated</th><td>{{ object.updated_at }}</td></tr>
+        </table>
+        <a href="{% url 'product_update' object.pk %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'product_delete' object.pk %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'product_list' %}" class="btn btn-outline-secondary">Back</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

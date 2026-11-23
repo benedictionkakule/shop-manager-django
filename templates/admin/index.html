@@ -1,0 +1,13 @@
+﻿{% extends "admin/index.html" %}
+
+{% block content %}
+{% if user.is_superuser %}
+<form method="post" action="{% url 'clear_recent_actions' %}"
+      onsubmit="return confirm('Clear your Recent actions history? This cannot be undone.');"
+      style="margin-bottom: 16px;">
+  {% csrf_token %}
+  <button type="submit" class="button">Clear recent actions</button>
+</form>
+{% endif %}
+{{ block.super }}
+{% endblock %}
