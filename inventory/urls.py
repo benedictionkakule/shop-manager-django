@@ -7,6 +7,7 @@ from . import accounts, reports, views
 
 urlpatterns = [
     path("", RedirectView.as_view(pattern_name="dashboard", permanent=False)),
+        path("favicon.ico", login_not_required(RedirectView.as_view(url="/static/favicon.ico")), name="favicon"),
         path("admin-tools/clear-recent-actions/", admin_tools.clear_recent_actions, name="clear_recent_actions"),
 
     # Authentication
