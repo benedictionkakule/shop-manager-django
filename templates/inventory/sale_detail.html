@@ -29,8 +29,8 @@
       </tfoot>
     </table>
 
-    <a href="{% url 'sale_update' object.pk %}" class="btn btn-primary">Edit</a>
-    <a href="{% url 'sale_delete' object.pk %}" class="btn btn-danger">Delete</a>
+    {% if perms.inventory.change_sale %}<a href="{% url 'sale_update' object.pk %}" class="btn btn-primary">Edit</a>{% endif %}
+    {% if perms.inventory.delete_sale %}<a href="{% url 'sale_delete' object.pk %}" class="btn btn-danger">Delete</a>{% endif %}
     <a href="{% url 'sale_list' %}" class="btn btn-outline-secondary">Back</a>
   </div>
 </div>

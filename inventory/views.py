@@ -1,6 +1,7 @@
 ﻿from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
+from .notifications import notify_sale
 from django.db.models import Count, ProtectedError, Q
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -247,6 +248,7 @@ def sale_create(request):
                     item.save()
                     product.quantity -= item.quantity    # reduce stock
                     product.save(update_fields=["quantity", "updated_at"])
+            notify_sale(sale)  # receipt + low-stock alert
 
             messages.success(request, f"Sale #{sale.pk} recorded. Total: {sale.total}")
             return redirect("sale_detail", pk=sale.pk)

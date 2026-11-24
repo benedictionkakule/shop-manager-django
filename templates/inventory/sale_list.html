@@ -22,8 +22,8 @@
       <td>{{ s.served_by|default:"-" }}</td>
       <td class="text-end">
         <a href="{% url 'sale_detail' s.pk %}" class="btn btn-sm btn-outline-secondary">View</a>
-        <a href="{% url 'sale_update' s.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
-        <a href="{% url 'sale_delete' s.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+        {% if perms.inventory.change_sale %}<a href="{% url 'sale_update' s.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>{% endif %}
+        {% if perms.inventory.delete_sale %}<a href="{% url 'sale_delete' s.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>{% endif %}
       </td>
     </tr>
   {% empty %}

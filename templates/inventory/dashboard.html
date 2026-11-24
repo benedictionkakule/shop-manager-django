@@ -1,4 +1,4 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
@@ -65,7 +65,7 @@
             <td>{{ p.name }}</td>
             <td><span class="badge bg-danger">{{ p.quantity }}</span></td>
             <td>{{ p.reorder_level }}</td>
-            <td class="text-end"><a href="{% url 'product_update' p.pk %}" class="btn btn-sm btn-outline-primary">Restock</a></td>
+            <td class="text-end">{% if perms.inventory.change_product %}<a href="{% url 'product_update' p.pk %}" class="btn btn-sm btn-outline-primary">Restock</a>{% endif %}</td>
           </tr>
         {% empty %}
           <tr><td colspan="4" class="text-success">All products are well stocked.</td></tr>

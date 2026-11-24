@@ -1,5 +1,6 @@
 ﻿from django.contrib import messages
 from django.contrib.auth.decorators import login_not_required
+from django.contrib.auth.models import Group
 from django.shortcuts import redirect, render
 
 from .forms import SignUpForm
@@ -16,6 +17,12 @@ def signup(request):
             user = form.save(commit=False)
             user.is_active = False  # an administrator must approve the account
             user.save()
+
+            # New accounts start with the least-privileged role
+            cashier = Group.objects.filter(name="Cashier").first()
+            if cashier:
+                user.groups.add(cashier)
+
             messages.success(
                 request,
                 "Account created. An administrator must approve it before you can sign in.",

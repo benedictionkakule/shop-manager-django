@@ -1,4 +1,4 @@
-﻿{% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +25,7 @@
           <li class="nav-item"><a class="nav-link" href="{% url 'category_list' %}">Categories</a></li>
           <li class="nav-item"><a class="nav-link" href="{% url 'supplier_list' %}">Suppliers</a></li>
           <li class="nav-item"><a class="nav-link" href="{% url 'customer_list' %}">Customers</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'sales_report' %}">Reports</a></li>
+          {% if perms.inventory.view_reports %}<li class="nav-item"><a class="nav-link" href="{% url 'sales_report' %}">Reports</a></li>{% endif %}
           {% if user.is_staff %}
           <li class="nav-item"><a class="nav-link" href="/admin/">Admin</a></li>
           {% endif %}

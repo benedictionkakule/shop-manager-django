@@ -87,6 +87,7 @@ class Sale(models.Model):
 
     class Meta:
         ordering = ["-date"]
+        permissions = [("view_reports", "Can view sales reports")]
 
     def __str__(self):
         return f"Sale #{self.pk} on {self.date:%Y-%m-%d}"
